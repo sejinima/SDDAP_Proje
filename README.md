@@ -1,21 +1,21 @@
-# 🎬 THERE WILL BE PROJECT NAME
+#  THERE WILL BE PROJECT NAME
 
 Our project is a movie review platform where users can rate films, write reviews, and share their favorite movies with friends.
 
-## 🚀 Features
-- 🎥 Add and rate movies
-- 📝 Write and read user reviews
-- 🔎 Search and filter movies
-- 👥 User profiles and friends list
-- 📊 Trending movies and popular reviews
+##  Features
+-  Add and rate movies
+-  Write and read user reviews
+-  Search and filter movies
+-  User profiles and friends list
+-  Trending movies and popular reviews
 
-## 🛠️ Tech Stack
+## Tech Stack
 WILL BE ADDED
 
-## 📂 Project Structure
+## Project Structure
  WILL BE ADDED
 
-## 🔧 Setup & Installation
+## Setup & Installation
 
 WILL BE ADDED
 
@@ -40,6 +40,6 @@ WILL BE ADDED
 .
 .
 
-## 📞 Contact
+##  Contact
 - **Email:** 
 - **GitHub:** [github.com/yourusername](https://github.com/yourusername)
