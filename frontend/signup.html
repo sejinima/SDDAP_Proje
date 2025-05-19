@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h2>Sign Up</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <input type="text" id="user_type" placeholder="User type (admin/user)" />
+    <button onclick="signup()">Sign Up</button>
+    <p id="message"></p>
+    <a href="index.html">Already have an account? Login</a>
+  </div>
+
+  <script>
+    async function signup() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const user_type = document.getElementById("user_type").value;
+
+      try {
+        const response = await fetch("http://localhost:8000/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password, user_type }),
+        });
+
+        const data = await response.json();
+
+        const messageEl = document.getElementById("message");
+
+        if (response.ok) {
+          messageEl.style.color = "green";
+          messageEl.innerText = "✅ Signup successful!";
+        } else {
+          messageEl.style.color = "red";
+          messageEl.innerText = data.detail || "❌ Signup failed.";
+        }
+      } catch (error) {
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").innerText = "❌ Error connecting to server.";
+      }
+    }
+  </script>
+</body>
+</html>
