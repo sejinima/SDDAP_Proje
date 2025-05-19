@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p id="message"></p>
+    <a href="signup.html">Don't have an account? Sign up</a>
+  </div>
+
+  <script>
+    async function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const response = await fetch("http://localhost:8000/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        const messageEl = document.getElementById("message");
+
+        if (response.ok) {
+          messageEl.style.color = "green";
+          messageEl.innerText = "✅ Login successful!";
+          console.log("Token:", data.access_token);
+          // İstersen token'ı kaydet:
+          // localStorage.setItem("token", data.access_token);
+        } else {
+          messageEl.style.color = "red";
+          messageEl.innerText = data.detail || "❌ Login failed.";
+        }
+      } catch (error) {
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").innerText = "❌ Error connecting to server.";
+      }
+    }
+  </script>
+</body>
+</html>
