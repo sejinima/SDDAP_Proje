@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign Up</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="login-signup-page">
   <div class="form-container">
-    <h2>Sign Up</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <input type="text" id="user_type" placeholder="User type (admin/user)" />
-    <button onclick="signup()">Sign Up</button>
+    <h2>Kayıt Ol</h2>
+    <input type="text" id="username" placeholder="Kullanıcı Adı" />
+    <input type="password" id="password" placeholder="Şifre" />
+    <input type="text" id="user_type" placeholder="Kullanıcı tipi (örneğin: user)" />
+    <button onclick="signup()">Kayıt Ol</button>
     <p id="message"></p>
-    <a href="index.html">Already have an account? Login</a>
+    <a href="index.html">Zaten bir hesabınız var mı? Giriş yapın</a>
   </div>
 
   <script>
@@ -22,6 +22,7 @@
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
       const user_type = document.getElementById("user_type").value;
+      const messageEl = document.getElementById("message");
 
       try {
         const response = await fetch("http://localhost:8000/auth/signup", {
@@ -34,18 +35,16 @@
 
         const data = await response.json();
 
-        const messageEl = document.getElementById("message");
-
         if (response.ok) {
-          messageEl.style.color = "green";
-          messageEl.innerText = "✅ Signup successful!";
+          messageEl.style.color = "lightgreen";
+          messageEl.innerText = "✅ Kayıt başarılı!";
         } else {
-          messageEl.style.color = "red";
-          messageEl.innerText = data.detail || "❌ Signup failed.";
+          messageEl.style.color = "tomato";
+          messageEl.innerText = data.detail || "❌ Kayıt başarısız.";
         }
       } catch (error) {
-        document.getElementById("message").style.color = "red";
-        document.getElementById("message").innerText = "❌ Error connecting to server.";
+        messageEl.style.color = "tomato";
+        messageEl.innerText = "❌ Sunucuya bağlanılamadı.";
       }
     }
   </script>

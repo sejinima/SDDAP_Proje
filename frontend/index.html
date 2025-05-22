@@ -1,25 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="login-signup-page">
   <div class="form-container">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
+    <h2>Giriş Yap</h2>
+    <input type="text" id="username" placeholder="Kullanıcı Adı" />
+    <input type="password" id="password" placeholder="Şifre" />
+    <button onclick="login()">Giriş Yap</button>
     <p id="message"></p>
-    <a href="signup.html">Don't have an account? Sign up</a>
+    <a href="signup.html">Hesabınız yok mu? Kayıt olun</a>
   </div>
 
   <script>
     async function login() {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
+      const messageEl = document.getElementById("message");
 
       try {
         const response = await fetch("http://localhost:8000/auth/login", {
@@ -32,21 +33,21 @@
 
         const data = await response.json();
 
-        const messageEl = document.getElementById("message");
-
         if (response.ok) {
-          messageEl.style.color = "green";
-          messageEl.innerText = "✅ Login successful!";
-          console.log("Token:", data.access_token);
-          // İstersen token'ı kaydet:
-          // localStorage.setItem("token", data.access_token);
+          localStorage.setItem("username", username);
+          localStorage.setItem("token", data.access_token);
+          messageEl.style.color = "lightgreen";
+          messageEl.innerText = "✅ Giriş başarılı. Yönlendiriliyorsunuz...";
+          setTimeout(() => {
+            window.location.href = "homepage.html";
+          }, 1000);
         } else {
-          messageEl.style.color = "red";
-          messageEl.innerText = data.detail || "❌ Login failed.";
+          messageEl.style.color = "tomato";
+          messageEl.innerText = data.detail || "❌ Giriş başarısız.";
         }
       } catch (error) {
-        document.getElementById("message").style.color = "red";
-        document.getElementById("message").innerText = "❌ Error connecting to server.";
+        messageEl.style.color = "tomato";
+        messageEl.innerText = "❌ Sunucuya bağlanılamadı.";
       }
     }
   </script>

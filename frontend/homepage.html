@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homepage</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Üst Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+      <div class="logo" onclick="window.location.href='homepage.html'">proje</div>
+    </div>
+
+    <div class="search-container">
+      <input type="text" placeholder="Film ara..." />
+      <button><span>&#128269;</span></button>
+    </div>
+  </div>
+
+  <!-- Menü Açılır Kutusu -->
+  <div class="menu-dropdown" id="menu-dropdown">
+    <a href="homepage.html">🏠 Ana Sayfa</a>
+    <a href="filmler.html">🎬 Filmler</a>
+    <a href="#">👥 Arkadaşlar</a>
+    <a href="#">ℹ️ Hakkımızda</a>
+    <a href="#" onclick="logout()">🚪 Çıkış Yap</a>
+  </div>
+
+  <!-- Profil -->
+  <div class="profile-icon" onclick="toggleDropdown()">👤</div>
+  <div class="dropdown" id="dropdown-menu">
+    <a href="profil.html">👤 Profilim</a>
+    <a href="#" onclick="logout()">🚪 Çıkış Yap</a>
+  </div>
+
+  <!-- Friends Activity -->
+  <div class="sidebar">
+    <div class="sidebar-content">
+      <h3>👥 Friends Activity</h3>
+      <div class="friend">Ali watched Interstellar ⭐⭐⭐⭐</div>
+      <div class="friend">Elif rated Inception ⭐⭐⭐⭐⭐</div>
+      <div class="friend">Mert liked Fight Club ⭐⭐⭐⭐</div>
+      <div class="friend">Zeynep reviewed The Matrix</div>
+    </div>
+  </div>
+
+  <!-- Film Listesi -->
+  <div class="main-container">
+    <div class="movie-grid">
+      <div class="movie-card" onclick="goToFilm(1)">
+        <img src="inception.jpg" alt="Inception" class="movie-poster" />
+        <div class="movie-info">
+          <div class="movie-title">Inception</div>
+          <div class="movie-meta">2010 • IMDb 8.8</div>
+        </div>
+      </div>
+
+      <div class="movie-card" onclick="goToFilm(2)">
+        <img src="matrix.jpg" alt="The Matrix" class="movie-poster" />
+        <div class="movie-info">
+          <div class="movie-title">The Matrix</div>
+          <div class="movie-meta">1999 • IMDb 8.7</div>
+        </div>
+      </div>
+
+      <div class="movie-card" onclick="goToFilm(3)">
+        <img src="interstellar.jpg" alt="Interstellar" class="movie-poster" />
+        <div class="movie-info">
+          <div class="movie-title">Interstellar</div>
+          <div class="movie-meta">2014 • IMDb 8.6</div>
+        </div>
+      </div>
+
+      <div class="movie-card" onclick="goToFilm(4)">
+        <img src="godfather.jpg" alt="The Godfather" class="movie-poster" />
+        <div class="movie-info">
+          <div class="movie-title">The Godfather</div>
+          <div class="movie-meta">1972 • IMDb 9.2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+<script>
+  const username = localStorage.getItem("username");
+  if (!username) window.location.href = "index.html";
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+
+  function goToFilm(id) {
+    window.location.href = `film.html?id=${id}`;
+  }
+
+  function toggleDropdown() {
+    const menu = document.getElementById("dropdown-menu");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  }
+
+  function toggleMenu() {
+    const menu = document.getElementById("menu-dropdown");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  }
+
+  // Dışarı tıklanınca menüleri kapat
+  document.addEventListener("click", function (event) {
+    const menu = document.getElementById("menu-dropdown");
+    const profile = document.getElementById("dropdown-menu");
+    const isMenuClick = event.target.closest(".menu-icon") || event.target.closest("#menu-dropdown");
+    const isProfileClick = event.target.closest(".profile-icon") || event.target.closest("#dropdown-menu");
+
+    if (!isMenuClick && menu) {
+      menu.style.display = "none";
+    }
+
+    if (!isProfileClick && profile) {
+      profile.style.display = "none";
+    }
+  });
+</script>
+</body>
+</html>

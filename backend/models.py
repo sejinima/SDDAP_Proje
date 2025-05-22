@@ -9,7 +9,7 @@ class User(BaseModel):
 
 class LoginData(BaseModel):
     username: str
-    pasasword: str
+    password: str
 
 
 class Token(BaseModel):
