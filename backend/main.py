@@ -1,13 +1,13 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from auth import router as auth_router
 from film import router as film_router
-from fastapi.middleware.cors import CORSMiddleware
-
 
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # veya sadece "http://localhost:8080"
+    allow_origins=["*"],  # Gerekirse ["http://127.0.0.1:5500"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
