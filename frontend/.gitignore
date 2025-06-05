@@ -1,0 +1,13 @@
+# Python önbellekleri
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+
+# VSCode ayar dosyaları
+.vscode/
+
+# OS gizli dosyalar
+.DS_Store
+Thumbs.db
