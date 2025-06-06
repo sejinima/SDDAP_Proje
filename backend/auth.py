@@ -6,15 +6,27 @@ from typing import List
 router = APIRouter()
 user_db: List[User] = []
 
-@router.post("/signup")
-def signup(user: User):
-    for u in user_db:
-        if u.username == user.username:
-            raise HTTPException(status_code=400, detail = "Username already exists")
 
-    user.password = hash_password(user.password)
-    user_db.append(user)
-    return {"message": "User created"}
+@app.post("/signup")
+def signup(user: User):
+    if not user.username or not user.password:
+        raise HTTPException(status_code=400, detail="Username and password are required")
+    
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username = ?", (user.username,))
+    if cursor.fetchone():
+        conn.close()
+        raise HTTPException(status_code=400, detail="Username already exists")
+    
+    # Sabit user_type: user
+    cursor.execute("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)", 
+                   (user.username, user.password, "user"))
+    conn.commit()
+    conn.close()
+    
+    return {"message": "User registered successfully"}
+
 
 @router.post("/login", response_model=Token)
 def login(data: LoginData):
