@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homepage</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+      <div class="logo" onclick="window.location.href='admin.html'">proje</div>
+    </div>
+    
+  </div>
+
+  <div class="menu-dropdown" id="menu-dropdown">
+    <a href="homepage.html">🏠 Ana Sayfa</a>
+    <a href="filmler.html">🎬 Filmler</a>
+    <a href="#" onclick="logout()">🚪 Çıkış Yap</a>
+  </div>
+
+  <div class="profile-icon" onclick="toggleDropdown()">👤</div>
+  <div class="dropdown" id="dropdown-menu">
+    <a href="profil.html">👤 Profilim</a>
+    <a href="#" onclick="logout()">🚪 Çıkış Yap</a>
+  </div>
+
+<div id="admin-container">
+    <h2>🎬 Admin Paneli</h2>
+
+    <div id="filmekle" class="section">
+      <h3>Film Ekle</h3>
+      <form id="movieForm">
+        <input name="title" placeholder="Başlık" required>
+        <textarea name="description" placeholder="Açıklama"></textarea>
+        <input type="date" name="release_date" required>
+        <button type="submit">Ekle</button>
+      </form>
+      <p id="movieMsg" class="message"></p>
+    </div>
+
+    <div id="kullaniciekle" class="section">
+      <h3>Kullanıcı Ekle</h3>
+      <form id="userForm">
+        <input name="username" placeholder="Kullanıcı adı" required>
+        <input name="email" placeholder="E-posta" required>
+        <input name="password" type="password" placeholder="Şifre" required>
+        <select name="role">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Ekle</button>
+      </form>
+      <p id="userMsg" class="message"></p>
+    </div>
+
+    <div id="roldegistir" class="section">
+      <h3>Rol Değiştir</h3>
+      <form id="roleForm">
+        <input name="user_id" type="number" placeholder="User ID" required>
+        <select name="role">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Güncelle</button>
+      </form>
+      <p id="roleMsg" class="message"></p>
+    </div>
+  </div>
+
+  <script>
+    let token = null;
+
+    // LOGIN HANDLER
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const u = document.getElementById('login-username').value.trim();
+      const p = document.getElementById('login-password').value.trim();
+      // sadece admin/admin kabul edilsin
+      if (u !== 'admin' || p !== 'admin') {
+        document.getElementById('loginMsg').innerText = 'Kullanıcı adı veya şifre yanlış.';
+        return;
+      }
+      try {
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          document.getElementById('loginMsg').innerText = data.detail || 'Giriş başarısız.';
+          return;
+        }
+        token = data.access_token;
+        // Token'ı sakla
+        localStorage.setItem('token', token);
+        // Admin UI'yı göster
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('admin-container').style.display = 'block';
+      } catch (err) {
+        document.getElementById('loginMsg').innerText = 'Sunucu hatası.';
+      }
+    });
+
+    // GENEL AJAX FUNKSİYONU
+    async function request(url, method, body) {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    }
+
+    // FILM EKLE
+    document.getElementById('movieForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const f = e.target;
+      const result = await request(
+        '/api/admin/movies',
+        'POST',
+        {
+          title: f.title.value,
+          description: f.description.value,
+          release_date: f.release_date.value
+        }
+      );
+      document.getElementById('movieMsg').innerText = result.msg || result.error || 'Beklenmedik sonuç';
+    });
+
+    // KULLANICI EKLE
+    document.getElementById('userForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const f = e.target;
+      const result = await request(
+        '/api/admin/users',
+        'POST',
+        {
+          username: f.username.value,
+          email:    f.email.value,
+          password: f.password.value,
+          role:     f.role.value
+        }
+      );
+      document.getElementById('userMsg').innerText = result.msg || result.error || 'Beklenmedik sonuç';
+    });
+
+    // ROL GÜNCELLE
+    document.getElementById('roleForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const f = e.target;
+      const result = await request(
+        `/api/admin/users/${f.user_id.value}/role`,
+        'PUT',
+        { role: f.role.value }
+      );
+      document.getElementById('roleMsg').innerText = result.msg || result.error || 'Beklenmedik sonuç';
+    });
+  </script>
+</body>
+</html>

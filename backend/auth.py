@@ -1,12 +1,16 @@
+# auth.py
 import sqlite3
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 from models import User, LoginData, Token
-from utils import hash_password, verify_password, create_token
+from utils import hash_password, verify_password, create_token, decode_token  # decode_token ekle
 from typing import Optional
 
+router = APIRouter()
 DB_PATH = "db/movies.db"
 
-router = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/signup")  
+
 
 @router.post("/signup")
 def signup(user: User):
