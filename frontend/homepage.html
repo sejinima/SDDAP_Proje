@@ -1,0 +1,90 @@
+
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homepage</title>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Login is required"); // Uyarı mesajı göster
+    window.location.href = "index.html"; // Giriş yapılmamışsa yönlendir
+  }
+</script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="menu-icon" onclick="toggleMenu()">☰</div>
+      <div class="logo" onclick="window.location.href='homepage.html'">proje</div>
+    </div>
+    <div class="search-container">
+      <input type="text" placeholder="Film ara..." />
+      <button><span>&#128269;</span></button>
+    </div>
+  </div>
+
+  <div class="menu-dropdown" id="menu-dropdown">
+    <a href="homepage.html">🏠 Ana Sayfa</a>
+    <a href="filmler.html">🎬 Filmler</a>
+    <a href="#">👥 Arkadaşlar</a>
+    <a href="#">ℹ️ Hakkımızda</a>
+    <a href="#" onclick="logout()">🚪 Çıkış Yap</a>
+  </div>
+
+  <div class="profile-icon" onclick="toggleDropdown()">👤</div>
+  <div class="dropdown" id="dropdown-menu">
+    <a href="profil.html">👤 Profilim</a>
+    <a href="#" onclick="logout()">🚪 Çıkış Yap</a>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-content">
+      <h3>👥 Friends Activity</h3>
+      <div class="friend">Ali watched Interstellar ⭐⭐⭐⭐</div>
+      <div class="friend">Elif rated Inception ⭐⭐⭐⭐⭐</div>
+      <div class="friend">Mert liked Fight Club ⭐⭐⭐⭐</div>
+      <div class="friend">Zeynep reviewed The Matrix</div>
+    </div>
+  </div>
+
+  <!-- Dinamik film kartları buraya eklenecek -->
+  <div class="main-container">
+    <div class="movie-grid" id="movie-grid">
+      <!-- JS ile doldurulacak -->
+    </div>
+  </div>
+
+<script>
+async function loadFilms() {
+  const res = await fetch("http://localhost:8000/film");
+  const films = await res.json();
+
+  const container = document.getElementById("movie-grid");
+  container.innerHTML = "";
+
+  films.forEach(film => {
+    const filmDiv = document.createElement("div");
+    filmDiv.classList.add("film");
+
+    filmDiv.innerHTML = `
+      <a href="film.html?id=${film.id}">
+        <img src="${film.poster_url}" alt="${film.title}">
+        <h3>${film.title} (${film.year})</h3>
+        <p>Rating: ${film.rating}</p>
+      </a>
+    `;
+
+    container.appendChild(filmDiv);
+  });
+}
+
+loadFilms();
+</script>
+  
+
+</body>
+</html>
