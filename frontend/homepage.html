@@ -49,58 +49,33 @@
     </div>
   </div>
 
-  <script>
-    const username = localStorage.getItem("username");
-    if (!username) window.location.href = "index.html";
+<script>
+async function loadFilms() {
+  const res = await fetch("http://localhost:8000/film");
+  const films = await res.json();
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = "index.html";
-    }
+  const container = document.getElementById("movie-grid");
+  container.innerHTML = "";
 
-    function toggleDropdown() {
-      const menu = document.getElementById("dropdown-menu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
+  films.forEach(film => {
+    const filmDiv = document.createElement("div");
+    filmDiv.classList.add("film");
 
-    function toggleMenu() {
-      const menu = document.getElementById("menu-dropdown");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
+    filmDiv.innerHTML = `
+      <a href="film.html?id=${film.id}">
+        <img src="${film.poster_url}" alt="${film.title}">
+        <h3>${film.title} (${film.year})</h3>
+        <p>Rating: ${film.rating}</p>
+      </a>
+    `;
 
-    document.addEventListener("click", function (event) {
-      const menu = document.getElementById("menu-dropdown");
-      const profile = document.getElementById("dropdown-menu");
-      const isMenuClick = event.target.closest(".menu-icon") || event.target.closest("#menu-dropdown");
-      const isProfileClick = event.target.closest(".profile-icon") || event.target.closest("#dropdown-menu");
+    container.appendChild(filmDiv);
+  });
+}
 
-      if (!isMenuClick && menu) menu.style.display = "none";
-      if (!isProfileClick && profile) profile.style.display = "none";
-    });
+loadFilms();
+</script>
+  
 
-    
-    
-    async function loadMovies() {
-      const response = await fetch("http://127.0.0.1:8000/film/");
-      const movies = await response.json();
-
-      const grid = document.getElementById("movie-grid");
-      movies.forEach(movie => {
-        const card = document.createElement("div");
-        card.className = "movie-card";
-        card.onclick = () => window.location.href = `film.html?id=${movie.id}`;
-        card.innerHTML = `
-          <img src="${movie.poster_url}" alt="${movie.title}" class="movie-poster" />
-          <div class="movie-info">
-            <div class="movie-title">${movie.title}</div>
-            <div class="movie-meta">${movie.year} • IMDb ${movie.rating}</div>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    loadMovies();
-  </script>
 </body>
 </html>

@@ -274,3 +274,71 @@ body {
   margin-top: 10px;
   font-size: 0.95rem;
 }
+
+.film {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  background-color: white;
+}
+
+.film img {
+  width: 150px;
+  height: auto;
+  border-radius: 4px;
+}
+.comments-section {
+  margin-top: 30px;
+}
+
+.comment {
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+.film-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+  flex-wrap: wrap;
+}
+.film-container img {
+  width: 250px;
+  height: auto;
+  border-radius: 10px;
+}
+.film-info {
+  flex: 1;
+  min-width: 300px;
+}
+.comments-section {
+  margin-top: 2rem;
+}
+.comment-box {
+  background-color: #222;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+.comment-form textarea {
+  width: 100%;
+  min-height: 80px;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+}
+/* style.css */
+.interactions {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+}
+
+#rating-form input {
+  width: 60px;
+}
