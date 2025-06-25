@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import sqlite3
 import os
 import requests
+from .utils import hash_password
 
 router = APIRouter()
 
@@ -45,3 +46,48 @@ def add_movie(movie: MovieInput):
         conn.close()
 
     return {"msg": "Film başarıyla eklendi"}
+
+    class UserCreate(BaseModel):
+    username: str
+    email: str
+    password: str
+    role: str = "user"
+
+@router.post("/admin/users")
+def create_user(user: UserCreate):
+    conn = sqlite3.connect("db/movies.db")
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
+            (user.username, user.email, hash_password(user.password), user.role)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=f"Hata: {e}")
+    finally:
+        conn.close()
+
+    return {"msg": "Kullanıcı başarıyla eklendi"}
+
+class RoleUpdate(BaseModel):
+    role: str  # "admin" veya "user"
+
+@router.put("/admin/users/{user_id}/role")
+def update_user_role(user_id: int, role_update: RoleUpdate):
+    if role_update.role not in ("admin", "user"):
+        raise HTTPException(status_code=400, detail="Geçersiz rol")
+
+    conn = sqlite3.connect("db/movies.db")
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE users SET role = ? WHERE id = ?", (role_update.role, user_id))
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
+        conn.commit()
+    finally:
+        conn.close()
+
+    return {"msg": "Rol başarıyla güncellendi"}
