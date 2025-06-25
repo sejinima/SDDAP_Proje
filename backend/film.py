@@ -136,6 +136,39 @@ def rate_film(film_id: int, score: int = Body(...), request: Request = None):
     conn.close()
     return {"message": "Puan kaydedildi"}
 
+@router.post("/{film_id}/unlike")
+def unlike_film(film_id: int, request: Request):
+    username = get_username_from_token(request)
+    user_id = get_user_id(username)
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM likes WHERE user_id = ? AND film_id = ?", (user_id, film_id))
+    conn.commit()
+    conn.close()
+    return {"message": "Beğeni kaldırıldı"}
+
+@router.get("/{film_id}/user_status")
+def get_user_status(film_id: int, request: Request):
+    username = get_username_from_token(request)
+    user_id = get_user_id(username)
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT 1 FROM likes WHERE user_id = ? AND film_id = ?", (user_id, film_id))
+    liked = cursor.fetchone() is not None
+
+    cursor.execute("SELECT score FROM ratings WHERE user_id = ? AND film_id = ?", (user_id, film_id))
+    score = cursor.fetchone()
+    conn.close()
+
+    return {
+        "liked": liked,
+        "user_score": score[0] if score else None
+    }
+
+
 # === Data Seeder (Builder Pattern-ish) ===
 def insert_sample_movies():
     films = [

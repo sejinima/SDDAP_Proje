@@ -1,39 +1,39 @@
-
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Film Detay</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <script src="film.js"></script>
   <script>
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Login is required"); // Uyarı mesajı göster
-    window.location.href = "index.html"; // Giriş yapılmamışsa yönlendir
-  }
-</script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Giriş yapmalısınız.");
+      window.location.href = "index.html";
+    }
+  </script>
 </head>
 <body>
   <div class="film-container">
     <img id="film-poster" src="" alt="Film Posteri">
     <div class="film-info">
-      <h1 id="film-title"></h1>
+      <h1 id="film-title">Yükleniyor...</h1>
       <p><strong>Yıl:</strong> <span id="film-year"></span></p>
       <p><strong>IMDb Puanı:</strong> <span id="film-rating"></span></p>
-<div class="interactions">
-  <button id="like-btn">❤️ Beğen</button>
 
-  <form id="rating-form">
-    <label for="rating">Puan (1–10):</label>
-    <input type="number" id="rating" min="1" max="10" required />
-    <button type="submit">Puanla</button>
-  </form>
+      <div class="interactions">
+        <button id="like-btn">❤️ Beğen</button>
 
-  <p id="like-count">Beğeni: Yükleniyor...</p>
-  <p id="average-rating">Ortalama Puan: Yükleniyor...</p>
-</div>
+        <form id="rating-form">
+          <label for="rating">Puan (1–10):</label>
+          <input type="number" id="rating" min="1" max="10" required />
+          <button type="submit">Puanla</button>
+        </form>
+
+        <p id="like-count">Beğeni: Yükleniyor...</p>
+        <p id="average-rating">Ortalama Puan: Yükleniyor...</p>
+      </div>
 
       <div class="comments-section">
         <h3>💬 Yorumlar</h3>

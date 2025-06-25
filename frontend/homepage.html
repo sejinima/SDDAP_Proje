@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homepage</title>
   <link rel="stylesheet" href="style.css" />
+  
+
   <script>
   const token = localStorage.getItem("token");
   if (!token) {
@@ -41,15 +43,6 @@
     <a href="#" onclick="logout()">🚪 Çıkış Yap</a>
   </div>
 
-  <div class="sidebar">
-    <div class="sidebar-content">
-      <h3>👥 Friends Activity</h3>
-      <div class="friend">Ali watched Interstellar ⭐⭐⭐⭐</div>
-      <div class="friend">Elif rated Inception ⭐⭐⭐⭐⭐</div>
-      <div class="friend">Mert liked Fight Club ⭐⭐⭐⭐</div>
-      <div class="friend">Zeynep reviewed The Matrix</div>
-    </div>
-  </div>
 
   <!-- Dinamik film kartları buraya eklenecek -->
   <div class="main-container">
@@ -58,9 +51,11 @@
     </div>
   </div>
 
+
 <script>
 async function loadFilms() {
-  const res = await fetch("http://localhost:8000/film");
+  const res = await fetch("http://localhost:8000/films/"); 
+
   const films = await res.json();
 
   const container = document.getElementById("movie-grid");

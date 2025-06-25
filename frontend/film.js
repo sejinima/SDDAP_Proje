@@ -3,13 +3,58 @@ const filmId = params.get("id");
 const token = localStorage.getItem("token");
 const API_BASE = "http://127.0.0.1:8000";
 
-const username = JSON.parse(atob(token.split(".")[1])).sub;
+if (!token) {
+  alert("Giriş yapmalısınız.");
+  window.location.href = "index.html";
+  throw new Error("Token bulunamadı");
+}
+
+if (!filmId) {
+  alert("Film ID bulunamadı.");
+  window.location.href = "homepage.html";
+  throw new Error("Film ID eksik");
+}
+
+let liked = false;
+let userScore = null;
+
+async function getUserStatus() {
+  const res = await fetch(`${API_BASE}/films/${filmId}/user_status`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  const data = await res.json();
+  liked = data.liked;
+  userScore = data.user_score;
+
+  updateLikeButton();
+  updateScoreInput();
+}
+
+function updateLikeButton() {
+  const likeBtn = document.getElementById("like-btn");
+  if (liked) {
+    likeBtn.textContent = "💔 Beğenmekten Vazgeç";
+    likeBtn.style.backgroundColor = "#b91c1c"; // kırmızımsı
+  } else {
+    likeBtn.textContent = "❤️ Beğen";
+    likeBtn.style.backgroundColor = "#1c64b9"; // mavimsi
+  }
+}
+
+function updateScoreInput() {
+  const input = document.getElementById("rating");
+  if (userScore !== null) {
+    input.value = userScore;
+  }
+}
 
 async function loadFilm() {
   const res = await fetch(`${API_BASE}/films/${filmId}`);
   const film = await res.json();
 
-  document.getElementById("film-poster").src = film.poster_url;
+  document.getElementById("film-poster").src = film.poster_url || "placeholder.jpg";
   document.getElementById("film-title").textContent = `${film.title} (${film.year})`;
   document.getElementById("film-year").textContent = film.year;
   document.getElementById("film-rating").textContent = film.rating;
@@ -45,23 +90,22 @@ async function submitComment() {
   loadComments();
 }
 
-// Beğeni gönder
-
+// Beğeni gönder / kaldır
 const likeBtn = document.getElementById("like-btn");
 if (likeBtn) {
-  likeBtn.addEventListener("click", () => {
-    fetch(`${API_BASE}/films/${filmId}/like`, {
+  likeBtn.addEventListener("click", async () => {
+    const endpoint = liked ? "unlike" : "like";
+    const res = await fetch(`${API_BASE}/films/${filmId}/${endpoint}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`
       }
-    })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message);
-      loadLikeCount();
-    })
-    .catch(err => console.error("Beğeni hatası:", err));
+    });
+    const data = await res.json();
+    alert(data.message);
+    liked = !liked;
+    updateLikeButton();
+    loadLikeCount();
   });
 }
 
@@ -71,20 +115,25 @@ if (ratingForm) {
   ratingForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const score = parseInt(document.getElementById("rating").value);
+    if (score < 1 || score > 10) {
+      alert("Puan 1 ile 10 arasında olmalı.");
+      return;
+    }
+
     fetch(`${API_BASE}/films/${filmId}/rate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ score: score })
+      body: JSON.stringify({ score })
     })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message);
-      loadAverageRating();
-    })
-    .catch(err => console.error("Rating hatası:", err));
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        loadAverageRating();
+      })
+      .catch(err => console.error("Puan hatası:", err));
   });
 }
 
@@ -106,8 +155,9 @@ function loadAverageRating() {
     });
 }
 
-// Sayfa yüklendiğinde çağır
+// Başlangıçta her şeyi yükle
 loadFilm();
 loadComments();
 loadLikeCount();
 loadAverageRating();
+getUserStatus();

@@ -10,10 +10,10 @@ from comments import router as comments_router
 
 app = FastAPI()
 
-# 🔓 CORS ayarları (Geliştirme aşamasında her şeye izin verebiliriz)
+# 🔓 CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Geliştirme için tüm kaynaklara izin ver
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,13 +24,11 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(film_router, prefix="/films")
 app.include_router(comments_router, prefix="/films")
 
-# 🌐 Frontend dizinini tanımla
+# 🌐 Statik frontend klasörü
 frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
-
-# 📁 HTML, CSS, JS dosyaları için statik servis
 app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
 
-# 🔗 Ana sayfa (opsiyonel, index.html doğrudan serve edilir)
+# Ana sayfayı manuel route ile göstermek istersen:
 @app.get("/")
 def serve_index():
     return FileResponse(os.path.join(frontend_dir, "index.html"))
