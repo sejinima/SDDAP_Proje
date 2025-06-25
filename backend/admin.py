@@ -7,7 +7,7 @@ import requests
 router = APIRouter()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "SDDAP_PROJE/backend/db/movies.db")  
+DB_PATH = os.path.join(BASE_DIR, "db/movies.db")  
 
 class MovieInput(BaseModel):
     title: str
