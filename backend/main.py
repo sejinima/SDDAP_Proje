@@ -7,6 +7,8 @@ import os
 from auth import router as auth_router
 from film import router as film_router
 from comments import router as comments_router
+from backend.admin import router as admin_router
+
 
 app = FastAPI()
 
@@ -23,6 +25,8 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/auth")
 app.include_router(film_router, prefix="/films")
 app.include_router(comments_router, prefix="/films")
+app.include_router(admin_router, prefix="/api")
+
 
 # 🌐 Frontend dizinini tanımla
 frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
