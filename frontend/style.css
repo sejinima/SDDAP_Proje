@@ -342,3 +342,100 @@ body {
 #rating-form input {
   width: 60px;
 }
+
+#filmekle,
+#kullaniciekle,
+#roldegistir {
+  width: 100%;
+  max-width: 800px;       /* sayfa ortasında bu genişliğe kadar genişlesin */
+  margin: 40px 0;      /* üstten 40px boşluk, yatayda ortala */
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  color: #222;            /* yazıları koyulaştır */
+}
+
+/* 2) Başlıklar daha koyu */
+#filmekle h3,
+#kullaniciekle h3,
+#roldegistir h3 {
+  color: #111;
+}
+
+/* 3) Formu yatay flex yap, gap ile elemanlar arası boşluk */
+#filmekle form,
+#kullaniciekle form,
+#roldegistir form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 4) Tüm form elemanlarına ortak yükseklik ve font */
+#filmekle input,
+#filmekle textarea,
+#filmekle select,
+#filmekle button,
+#kullaniciekle input,
+#kullaniciekle select,
+#kullaniciekle button,
+#roldegistir input,
+#roldegistir select,
+#roldegistir button {
+  font-family: inherit;
+  font-size: 0.95rem;
+  height: 42px;           /* hepsi aynı yükseklikte */
+  line-height: 1.2;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Textarea’yı biraz daha uzun yap */
+#filmekle textarea {
+  height: 80px;
+  padding-top: 8px;
+}
+
+/* Datepicker’ı da aynı yükseklikte tut */
+#filmekle input[type="date"] {
+  padding: 0 12px;
+  height: 42px;
+}
+
+/* Genişlikleri dengeli ayarla (örnek değerler) */
+#filmekle input[name="title"],
+#kullaniciekle input[name="username"],
+#roldegistir input[name="user_id"] {
+  flex: 1 1 200px;        /* büyüyebilir ama en az 200px */
+}
+#filmekle textarea,
+#kullaniciekle input[name="email"] {
+  flex: 1 1 250px;
+}
+#filmekle input[type="date"],
+#kullaniciekle select,
+#roldegistir select {
+  flex: 0 0 160px;
+}
+
+/* Butonları öne çıkar */
+#filmekle button,
+#kullaniciekle button,
+#roldegistir button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  flex: 0 0 auto;
+  padding: 0 18px;
+  transition: background-color 0.2s;
+}
+#filmekle button:hover,
+#kullaniciekle button:hover,
+#roldegistir button:hover {
+  background-color: #0056b3;
+}
