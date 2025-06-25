@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎬 SDDAP_Proje
 
 A lightweight web application built with **FastAPI**, **Jinja2**, and **SQLite** that allows users to register, log in, and review movies. This project is structured for scalability and educational purposes, focusing on modular design, user authentication, and film-based interactions.
@@ -115,3 +116,53 @@ Developed by:
 - **[@sejinima](https://github.com/sejinima)**
 - **[@tariccc](https://github.com/tariccc)**
 - **[@NerdSlayer1](https://github.com/NerdSlayer1)**
+=======
+#  THERE WILL BE PROJECT NAME
+
+Our project is a movie review platform where users can rate films, write reviews, and share their favorite movies with friends.
+
+##  Features
+-  Add and rate movies
+-  Write and read user reviews
+-  Search and filter movies
+-  User profiles and friends list
+-  Trending movies and popular reviews
+
+## Tech Stack
+WILL BE ADDED
+
+## Project Structure
+ WILL BE ADDED
+
+## Setup & Installation
+
+```
+WILL BE ADDED
+```
+
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+##  Contact
+- **Email:** 
+- **GitHub:** [github.com/yourusername](https://github.com/yourusername)
+>>>>>>> main
