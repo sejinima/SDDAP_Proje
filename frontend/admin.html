@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Paneli</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #f7f9fc;
+      font-family: "Inter", Arial, sans-serif;
+    }
+    .admin-panel {
+      max-width: 440px;
+      margin: 32px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 32px #0001;
+      padding: 32px 28px 28px 28px;
+    }
+    h2, h3 { margin-top: 0; }
+    .section {
+      margin-bottom: 32px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    .section:last-child { border-bottom: none; }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    input, select, textarea, button {
+      font-size: 1rem;
+      border-radius: 7px;
+      padding: 10px;
+      border: 1px solid #ccd;
+      outline: none;
+      background: #f4f6fa;
+      transition: border 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border: 1.7px solid #377dff;
+      background: #fff;
+    }
+    button {
+      background: linear-gradient(90deg, #377dff 60%, #61b0ff 100%);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    button[type="button"] {
+      background: #f4f6fa;
+      color: #377dff;
+      border: 1px solid #cbe2ff;
+      margin-bottom: 4px;
+    }
+    button[type="button"]:hover {
+      background: #d8eaff;
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(90deg, #2765c3 60%, #4097cf 100%);
+    }
+    #preview-poster {
+      display: none;
+      margin: 10px auto 6px auto;
+      max-width: 180px;
+      max-height: 260px;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px #0002;
+      background: #fff;
+      transition: opacity .2s;
+    }
+    .message {
+      font-size: .98rem;
+      margin-top: 4px;
+      color: #257d00;
+      min-height: 18px;
+    }
+    @media (max-width: 600px) {
+      .admin-panel { max-width: 99vw; padding: 6vw 3vw; }
+      #preview-poster { max-width: 98vw; }
+    }
+  </style>
+</head>
+<body>
+<div class="admin-panel">
+
+  <h2>🎬 Admin Paneli</h2>
+
+  <div class="section">
+    <h3>Film Ekle</h3>
+    <form id="movieForm" autocomplete="off">
+      <input name="title" id="omdb-title" placeholder="Film Adı" required>
+      <input name="year" id="omdb-year" placeholder="Yıl" required>
+      <button type="button" id="fetch-omdb">OMDb'den Doldur</button>
+      <input name="rating" id="omdb-rating" placeholder="IMDb Puanı" required>
+      <input name="poster_url" id="omdb-poster" placeholder="Poster URL">
+      <img id="preview-poster" src="" alt="Poster">
+      <button type="submit">Kaydet</button>
+    </form>
+    <p id="movieMsg" class="message"></p>
+  </div>
+
+  <div class="section">
+    <h3>Kullanıcı Ekle</h3>
+    <form id="userForm">
+      <input name="username" placeholder="Kullanıcı adı" required>
+      <input name="email" placeholder="E-posta" required>
+      <input name="password" type="password" placeholder="Şifre" required>
+      <select name="role">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit">Ekle</button>
+    </form>
+    <p id="userMsg" class="message"></p>
+  </div>
+
+  <div class="section">
+    <h3>Rol Değiştir</h3>
+    <form id="roleForm">
+      <input name="user_id" type="number" placeholder="User ID" required>
+      <select name="role">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit">Güncelle</button>
+    </form>
+    <p id="roleMsg" class="message"></p>
+  </div>
+</div>
+
+<script>
+  // AJAX helper (token'lı)
+  async function request(url, method, body) {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    try {
+      return await res.json();
+    } catch (e) {
+      return { error: "Sunucudan cevap alınamadı" };
+    }
+  }
+
+  document.getElementById('fetch-omdb').onclick = async function(e) {
+    e.preventDefault();
+    const title = document.getElementById('omdb-title').value.trim();
+    const year = document.getElementById('omdb-year').value.trim();
+    if (!title) return alert("Film adı girin.");
+
+    const url = `https://www.omdbapi.com/?apikey=729dc000&t=${encodeURIComponent(title)}${year ? `&y=${year}` : ''}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    console.log("OMDb response:", data); // DEBUG
+
+    const posterEl = document.getElementById('preview-poster');
+    if (data.Response === "False") {
+      alert("Film bulunamadı!");
+      posterEl.style.display = "none";
+      document.getElementById('omdb-poster').value = "";
+      return;
+    }
+
+    document.getElementById('omdb-rating').value = data.imdbRating || "";
+    document.getElementById('omdb-poster').value = (data.Poster && data.Poster !== "N/A") ? data.Poster : "";
+
+    // Poster önizleme
+    if (data.Poster && data.Poster !== "N/A") {
+      posterEl.src = data.Poster;
+      posterEl.alt = data.Title + " poster";
+      posterEl.style.display = "block";
+    } else {
+      posterEl.src = "";
+      posterEl.style.display = "none";
+    }
+    if (!document.getElementById('omdb-year').value && data.Year) {
+      document.getElementById('omdb-year').value = data.Year;
+    }
+  };
+
+  // FILM EKLEME
+  document.getElementById('movieForm').onsubmit = async function(e) {
+    e.preventDefault();
+    const f = e.target;
+    const result = await request(
+      '/api/admin/movies',
+      'POST',
+      {
+        title: f.title.value,
+        year: parseInt(f.year.value),
+        rating: parseFloat(f.rating.value),
+        poster_url: f.poster_url.value
+      }
+    );
+    document.getElementById('movieMsg').innerText = result.msg || result.detail || result.error || 'Beklenmedik sonuç';
+    f.reset();
+    document.getElementById('preview-poster').style.display = "none";
+  };
+
+  // KULLANICI EKLEME
+  document.getElementById('userForm').onsubmit = async function(e) {
+    e.preventDefault();
+    const f = e.target;
+    const result = await request(
+      '/api/admin/users',
+      'POST',
+      {
+        username: f.username.value,
+        email: f.email.value,
+        password: f.password.value,
+        role: f.role.value
+      }
+    );
+    document.getElementById('userMsg').innerText = result.msg || result.detail || result.error || 'Beklenmedik sonuç';
+    f.reset();
+  };
+
+  // ROL DEĞİŞTİRME
+  document.getElementById('roleForm').onsubmit = async function(e) {
+    e.preventDefault();
+    const f = e.target;
+    const result = await request(
+      `/api/admin/users/${f.user_id.value}/role`,
+      'PUT',
+      { role: f.role.value }
+    );
+    document.getElementById('roleMsg').innerText = result.msg || result.detail || result.error || 'Beklenmedik sonuç';
+    f.reset();
+  };
+</script>
+</body>
+</html>
